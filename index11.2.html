@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GaViAn Records</title>
+<style>
+  /* Reset y básicos */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    background: #000;
+    color: #fff;
+    font-family: Arial, sans-serif;
+  }
+  a {
+    color: #fff;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+
+  /* Header */
+  header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: #000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    z-index: 1000;
+  }
+  #btn-email, #btn-email-final {
+    background: #fff;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  #logo-header {
+    height: 40px;
+    width: auto;
+  }
+  #email-input-container {
+    position: fixed;
+    top: 50px;
+    left: 10px;
+    background: #111;
+    padding: 10px;
+    border-radius: 8px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 1001;
+  }
+  #email-input-container input {
+    padding: 8px;
+    border-radius: 5px;
+    border: none;
+    width: 200px;
+  }
+  #email-input-container button {
+    background: #fff;
+    color: #000;
+    border: none;
+    padding: 8px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  #email-confirmation {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #0f0;
+  }
+
+  /* Logo Fade In on load */
+  #fade-logo-container {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+  }
+  #fade-logo-container img {
+    width: 150px;
+    opacity: 0;
+    transition: opacity 2s ease;
+  }
+  #fade-logo-container.show img {
+    opacity: 1;
+  }
+
+  /* Contenedor principal */
+  main {
+    margin-top: 70px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 15px 40px;
+  }
+
+  /* Secciones fade-in */
+  section.fade-section {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease, transform 1s ease;
+    margin-bottom: 50px;
+  }
+  section.fade-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Última canción Prosa MX */
+  #last-song {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 60px;
+  }
+  #last-song iframe {
+    width: 100%;
+    max-width: 560px;
+    height: 315px;
+    border: none;
+  }
+  #last-song a.spotify-link {
+    display: inline-block;
+    background: #1DB954;
+    color: #000;
+    font-weight: bold;
+    padding: 10px 18px;
+    border-radius: 30px;
+    text-align: center;
+    max-width: 200px;
+  }
+  #last-song a.spotify-link:hover {
+    background: #14833b;
+  }
+
+  /* Álbumes */
+  .albums {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+  }
+  .album {
+    background: #111;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 190px;
+    text-align: center;
+    box-shadow: 0 0 10px #222;
+    transition: transform 0.3s ease;
+  }
+  .album img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .album h3 {
+    margin: 10px 0 6px;
+    font-size: 16px;
+  }
+  .album a.spotify-link {
+    display: block;
+    margin: 0 10px 10px;
+    background: #1DB954;
+    color: #000;
+    font-weight: bold;
+    padding: 8px 0;
+    border-radius: 25px;
+    text-decoration: none;
+  }
+  .album a.spotify-link:hover {
+    background: #14833b;
+  }
+  .album.fade-in {
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+  .album.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Tours */
+  .tours {
+    background: #111;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px #222;
+    margin-bottom: 50px;
+  }
+  .tours h2 {
+    margin-top: 0;
+  }
+  .tour-artist {
+    margin-bottom: 15px;
+  }
+  .tour-artist p {
+    font-style: italic;
+  }
+
+  /* Redes sociales */
+  footer {
+    background: #000;
+    padding: 20px 15px;
+    text-align: center;
+    font-size: 14px;
+  }
+  .social-links {
+    margin-bottom: 12px;
+  }
+  .social-links a {
+    margin: 0 10px;
+    font-weight: bold;
+  }
+
+  /* Prosa final section */
+  .prosa-final {
+    position: relative;
+    background: #111;
+    padding: 40px 20px 60px;
+    border-radius: 10px;
+    margin-bottom: 50px;
+    overflow: hidden;
+  }
+  .prosa-final .background-image {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-position: center;
+    background-size: cover;
+    opacity: 0.5;
+    z-index: 0;
+  }
+  .prosa-final .content {
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .prosa-final input[type=email],
+  .prosa-final button {
+    margin-top: 10px;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    header {
+      padding: 10px;
+    }
+    #logo-header {
+      height: 30px;
+    }
+    .albums {
+      justify-content: center;
+    }
+    .album {
+      width: 100%;
+      max-width: 280px;
+    }
+    #last-song iframe {
+      height: 200px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Logo Fade On Load -->
+<div id="fade-logo-container">
+  <img src="logo.png" alt="GaViAn Records Logo" />
+</div>
+
+<header>
+  <button id="btn-email">Agregar email</button>
+  <img id="logo-header" src="logo.png" alt="GaViAn Records" />
+</header>
+
+<div id="email-input-container">
+  <input type="email" id="email-input" placeholder="Tu email..." />
+  <button id="email-submit-btn">Enviar</button>
+  <div id="email-confirmation"></div>
+</div>
+
+<main>
+
+  <section id="last-song" class="fade-section visible">
+    <h2>Última canción - Prosa MX</h2>
+    <iframe src="https://youtu.be/vSqcBaSeXdo?si=JiPEBXPFQFgURbQu" title="Prosa MX Última Canción" allowfullscreen></iframe>
+    <a href="https://open.spotify.com/artist/ARTIST_ID" target="_blank" rel="noopener" class="spotify-link">Escuchar en Spotify</a>
+  </section>
+
+  <section id="albums" class="fade-section">
+    <h2>Álbumes</h2>
+    <div class="albums" id="album-list">
+      <div class="album fade-in">
+        <img src="loverboy.jpg" alt="LoverBoy - Jaeru Kurai" />
+        <h3>LoverBoy - Jaeru Kurai</h3>
+        <a href="https://open.spotify.com/album/ALBUM_ID1" target="_blank" rel="noopener" class="spotify-link">Escuchar ya LoverBoy</a>
+      </div>
+      <div class="album fade-in">
+        <img src="uncigarro.jpg" alt="Un Cigarro Más - LuxxoG" />
+        <h3>Un Cigarro Más - LuxxoG</h3>
+        <a href="https://open.spotify.com/album/ALBUM_ID2" target="_blank" rel="noopener" class="spotify-link">Escuchar en Spotify</a>
+      </div>
+      <div class="album fade-in">
+        <img src="enlavidaylamuerte.jpg" alt="En La Vida Y La Muerte Yo Gano - Kale" />
+        <h3>En La Vida Y La Muerte Yo Gano - Kale</h3>
+        <a href="https://open.spotify.com/album/ALBUM_ID3" target="_blank" rel="noopener" class="spotify-link">Escuchar en Spotify</a>
+      </div>
+      <div class="album fade-in">
+        <img src="masvivosquemuertos.jpg" alt="Más Vivos Que Muertos - Clandestino" />
+        <h3>Más Vivos Que Muertos - Clandestino</h3>
+        <a href="https://open.spotify.com/album/ALBUM_ID4" target="_blank" rel="noopener" class="spotify-link">Escuchar en Spotify</a>
+      </div>
+      <div class="album fade-in">
+        <img src="ningunocomoyo.jpg" alt="Ningúno Como Yo - Prosa MX" />
+        <h3>Ningúno Como Yo - Prosa MX</h3>
+        <a href="https://open.spotify.com/album/ALBUM_ID5" target="_blank" rel="noopener" class="spotify-link">Escuchar en Spotify</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="tours" class="fade-section tours">
+    <h2>Tours</h2>
+    <div class="tour-artist">
+      <h3>Kale</h3>
+      <p>Regresa otro día para disfrutar sus fechas.</p>
+    </div>
+    <div class="tour-artist">
+      <h3>Jaeru Kurai</h3>
+      <p>Sin fechas programadas.</p>
+    </div>
+    <div class="tour-artist">
+      <h3>Prosa MX</h3>
+      <p>Sin fechas programadas.</p>
+    </div>
+    <div class="tour-artist">
+      <h3>Clandestino</h3>
+      <p>Sin fechas programadas.</p>
+    </div>
+    <div class="tour-artist">
+      <h3>Luxxo</h3>
+      <p>Sin fechas programadas.</p>
+    </div>
+  </section>
+
+  <section id="prosa-final" class="fade-section prosa-final">
+    <div class="background-image" style="background-image: url('fondo-prosa.jpg'); opacity: 0;"></div>
+    <div class="content">
+      <h2>Prosa MX más vivo que nunca.</h2>
+      <p>Disfruta de los sencillos de Prosa y su nuevo álbum en camino.</p>
+      <p>Ingresa tu email para recibir noticias sobre su álbum.</p>
+      <div style="margin-top: 10px;">
+        <input type="email" id="email-input-final" placeholder="Tu email..." style="padding: 10px; border-radius: 5px; border: none; width: 100%; max-width: 300px;" />
+        <button id="email-submit-btn-final" style="padding: 10px; background: #fff; color: #000; font-weight: bold; border-radius: 5px; border: none; margin-top: 10px; cursor: pointer;">Enviar</button>
+        <div id="confirmation-msg-final" style="color: #0f0; margin-top: 6px; font-size: 14px;"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="social-links">
+    <a href="https://x.com/GavianRecords?t=KZbugboYSi1I9hanhwf6mQ&s=09" target="_blank" rel="noopener">X</a>
+    <a href="https://www.instagram.com/gavianrecordsoficial?igsh=d3cycjBsNzZ2MDZ2" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://www.facebook.com/share/19GzQKMABa/" target="_blank" rel="noopener">Facebook</a>
+    <a href="https://youtube.com/@gavianrecordsoficial?si=kbGGvAGVODymdT5D" target="_blank" rel="noopener">YouTube</a>
+  </div>
+  <div>© 2025 GaViAn Records. Todos los derechos reservados.</div>
+</footer>
+
+<script>
+  // Logo fade in and page load flow
+  const fadeLogoContainer = document.getElementById('fade-logo-container');
+  const fadeLogoImage = fadeLogoContainer.querySelector('img');
+  const mainContent = document.querySelector('main');
+
+  function showMainContent() {
+    fadeLogoContainer.style.display = 'none';
+    mainContent.style.display = 'block';
+    // Trigger fade effect for all fade-section visible initially
+    fadeSections.forEach(section => {
+      if (section.id === 'last-song') section.classList.add('visible');
+    });
+  }
+
+  window.onload = () => {
+    fadeLogoContainer.classList.add('show');
+    setTimeout(() => {
+      fadeLogoContainer.classList.remove('show');
+      setTimeout(() => {
+        showMainContent();
+      }, 500);
+    }, 2500);
+  };
+
+  // Email input toggle top-left
+  const btnEmail = document.getElementById('btn-email');
+  const emailInputContainer = document.getElementById('email-input-container');
+  const emailInput = document.getElementById('email-input');
+  const emailSubmitBtn = document.getElementById('email-submit-btn');
+  const emailConfirmation = document.getElementById('email-confirmation');
+
+  btnEmail.addEventListener('click', () => {
+    if (emailInputContainer.style.display === 'flex') {
+      emailInputContainer.style.display = 'none';
+      emailConfirmation.textContent = '';
+    } else {
+      emailInputContainer.style.display = 'flex';
+      emailInput.focus();
+    }
+  });
+
+  emailSubmitBtn.addEventListener('click', () => {
+    if (emailInput.value.includes('@')) {
+      emailConfirmation.style.color = '#0f0';
+      emailConfirmation.textContent = 'Ahora recibirás noticias de tours, álbumes, sencillos, etc.';
+      emailInput.value = '';
+    } else {
+      emailConfirmation.style.color = '#f00';
+      emailConfirmation.textContent = 'Por favor ingresa un correo válido.';
+    }
+  });
+
+  // Email form at the end
+  const emailInputFinal = document.getElementById('email-input-final');
+  const emailSubmitBtnFinal = document.getElementById('email-submit-btn-final');
+  const confirmationMsgFinal = document.getElementById('confirmation-msg-final');
+
+  emailSubmitBtnFinal.addEventListener('click', () => {
+    if (emailInputFinal.value.includes('@')) {
+      confirmationMsgFinal.style.color = '#0f0';
+      confirmationMsgFinal.textContent = 'Ahora recibirás noticias de tours, álbumes, sencillos, etc.';
+      emailInputFinal.value = '';
+    } else {
+      confirmationMsgFinal.style.color = '#f00';
+      confirmationMsgFinal.textContent = 'Por favor ingresa un correo válido.';
+    }
+  });
+
+  // Scroll fade-in for sections and albums with one by one for albums
+  const fadeSections = document.querySelectorAll('section.fade-section');
+  const albums = document.querySelectorAll('.album.fade-in');
+
+  function checkFade() {
+    const scrollPos = window.scrollY + window.innerHeight;
+    fadeSections.forEach(section => {
+      if (scrollPos > section.offsetTop + 50) {
+        section.classList.add('visible');
+      } else {
+        section.classList.remove('visible');
+      }
+    });
+
+    // Albums fade one by one
+    albums.forEach((album, index) => {
+      if (scrollPos > album.offsetTop + 50) {
+        setTimeout(() => {
+          album.classList.add('visible');
+        }, index * 300);
+      } else {
+        album.classList.remove('visible');
+      }
+    });
+
+    // Prosa final background image fade on scroll into view
+    const prosaFinal = document.querySelector('.prosa-final');
+    const bgImage = prosaFinal.querySelector('.background-image');
+    const prosaTop = prosaFinal.offsetTop;
+    const prosaBottom = prosaTop + prosaFinal.offsetHeight;
+    const windowBottom = window.scrollY + window.innerHeight;
+
+    if (windowBottom > prosaTop + 50 && window.scrollY < prosaBottom) {
+      bgImage.style.opacity = '0.5';
+    } else {
+      bgImage.style.opacity = '0';
+    }
+  }
+
+  window.addEventListener('scroll', checkFade);
+  window.addEventListener('resize', checkFade);
+  // Run once on load
+  checkFade();
+
+</script>
+
+</body>
+</html>
